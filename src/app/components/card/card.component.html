@@ -1,0 +1,33 @@
+<article
+  class="card"
+  tabindex="0"
+  role="button"
+  (click)="selected.emit(flight)"
+  (keydown.enter)="selected.emit(flight)"
+>
+  <div class="airline">
+    <strong>{{ flight.airline }}</strong>
+    <span class="muted">{{ flight.flightNumber }}</span>
+  </div>
+
+  <div class="times">
+    <div>
+      <div class="time">{{ flight.departureTime | date: 'HH:mm' }}</div>
+      <div class="muted">{{ flight.from }}</div>
+    </div>
+    <div class="middle">
+      <div class="muted">{{ flight.durationMinutes | duration }}</div>
+      <div class="line"></div>
+      <div class="muted">{{ stopsLabel }}</div>
+    </div>
+    <div>
+      <div class="time">{{ flight.arrivalTime | date: 'HH:mm' }}</div>
+      <div class="muted">{{ flight.to }}</div>
+    </div>
+  </div>
+
+  <div class="price">
+    {{ flight.price | currency: 'INR' : 'symbol' : '1.0-0' }}
+    <span class="muted">per person</span>
+  </div>
+</article>

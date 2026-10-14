@@ -1,0 +1,42 @@
+<form class="filters" [formGroup]="form">
+  <div class="header">
+    <h3>Filters</h3>
+    <button type="button" class="link" (click)="reset()">Reset</button>
+  </div>
+
+  <div class="group">
+    <label for="price">Max price: ₹{{ form.controls.maxPrice.value | number: '1.0-0' }}</label>
+    <input
+      id="price"
+      type="range"
+      step="100"
+      [min]="minPrice"
+      [max]="maxPrice"
+      formControlName="maxPrice"
+    />
+  </div>
+
+  <div class="group">
+    <label for="stops">Stops</label>
+    <select id="stops" formControlName="stops">
+      <option value="any">Any</option>
+      <option value="0">Non-stop</option>
+      <option value="1">1 stop</option>
+      <option value="2">2 stops</option>
+    </select>
+  </div>
+
+  <div class="group">
+    <span class="label">Airlines</span>
+    @for (a of airlines; track a) {
+      <label class="check">
+        <input
+          type="checkbox"
+          [checked]="isAirlineChecked(a)"
+          (change)="toggleAirline(a, $any($event.target).checked)"
+        />
+        {{ a }}
+      </label>
+    }
+  </div>
+</form>

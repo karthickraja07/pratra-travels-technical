@@ -1,0 +1,44 @@
+<div class="summary">
+  <div>
+    <h2>{{ params()['from'] }} → {{ params()['to'] }}</h2>
+    <p class="muted">
+      {{ params()['departureDate'] | date: 'd MMM y' }} –
+      {{ params()['returnDate'] | date: 'd MMM y' }} ·
+      {{ params()['passengers'] }} passenger(s)
+    </p>
+  </div>
+  <a routerLink="/" class="new-search">New search</a>
+</div>
+
+@if (vm$ | async; as vm) {
+  @switch (vm.status) {
+    @case ('loading') {
+      <app-loader message="Searching flights..." />
+    }
+    @case ('error') {
+      <app-error-message [message]="vm.error" [showRetry]="true" (retry)="retry()" />
+    }
+    @case ('success') {
+      <div class="layout">
+        <aside>
+          <app-filters
+            [flights]="vm.flights"
+            (filtersChange)="filters$.next($event)"
+          />
+        </aside>
+        <section>
+          <p class="muted">Showing {{ vm.filtered.length }} of {{ vm.flights.length }} flights</p>
+          @for (f of vm.filtered; track f.id) {
+            <app-card [flight]="f" (selected)="openDetails($event)" />
+          } @empty {
+            <p class="empty">
+              {{ vm.flights.length === 0
+                ? 'No flights found for this route.'
+                : 'No flights match your filters.' }}
+            </p>
+          }
+        </section>
+      </div>
+    }
+  }
+}

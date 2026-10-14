@@ -1,0 +1,69 @@
+<button type="button" class="back" (click)="back()">← Back to results</button>
+
+@if (vm$ | async; as vm) {
+  @switch (vm.status) {
+    @case ('loading') {
+      <app-loading-spinner message="Loading flight details..." />
+    }
+    @case ('error') {
+      <app-error-message [message]="vm.error" />
+    }
+    @case ('success') {
+      @if (vm.flight; as f) {
+        <article class="details">
+          <header>
+            <h2>{{ f.airline }} · {{ f.flightNumber }}</h2>
+            <span class="badge">{{ f.cabinClass }}</span>
+          </header>
+
+          <div class="route">
+            <div>
+              <div class="time">{{ f.departureTime | date: 'HH:mm' }}</div>
+              <div>{{ f.from }}</div>
+              <div class="muted">{{ f.departureTime | date: 'EEE, d MMM y' }}</div>
+            </div>
+            <div class="center">
+              <div>{{ f.durationMinutes | duration }}</div>
+              <div class="line"></div>
+              <div class="muted">
+                {{ f.stops === 0 ? 'Non-stop' : f.stops + ' stop(s)' }}
+              </div>
+            </div>
+            <div>
+              <div class="time">{{ f.arrivalTime | date: 'HH:mm' }}</div>
+              <div>{{ f.to }}</div>
+              <div class="muted">{{ f.arrivalTime | date: 'EEE, d MMM y' }}</div>
+            </div>
+          </div>
+
+          <dl>
+            <dt>Aircraft</dt><dd>{{ f.aircraft }}</dd>
+            <dt>Cabin class</dt><dd>{{ f.cabinClass }}</dd>
+            <dt>Baggage</dt><dd>{{ f.baggage }}</dd>
+            <dt>Layovers</dt>
+            <dd>
+              @if (f.layovers.length === 0) {
+                None
+              } @else {
+                <ul>
+                  @for (l of f.layovers; track l) { <li>{{ l }}</li> }
+                </ul>
+              }
+            </dd>
+          </dl>
+
+          <footer>
+            <div>
+              <div class="muted">
+                {{ f.price | currency: 'INR' : 'symbol' : '1.0-0' }} × {{ passengers }} passenger(s)
+              </div>
+              <div class="total">
+                {{ f.price * passengers | currency: 'INR' : 'symbol' : '1.0-0' }}
+              </div>
+            </div>
+          </footer>
+        </article>
+      }
+    }
+  }
+}

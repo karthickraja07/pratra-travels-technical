@@ -1,0 +1,60 @@
+<form class="search-form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+  <div class="field">
+    <label for="from">From (IATA code)</label>
+    <input id="from" type="text" formControlName="from" placeholder="DEL" maxlength="3" />
+    @if (form.controls.from.touched && form.controls.from.errors) {
+      <small class="error">
+        @if (form.controls.from.errors['required']) { Origin is required. }
+        @else { Enter a 3-letter airport code. }
+      </small>
+    }
+  </div>
+
+  <div class="field">
+    <label for="to">To (IATA code)</label>
+    <input id="to" type="text" formControlName="to" placeholder="BOM" maxlength="3" />
+    @if (form.controls.to.touched && form.controls.to.errors) {
+      <small class="error">
+        @if (form.controls.to.errors['required']) { Destination is required. }
+        @else { Enter a 3-letter airport code. }
+      </small>
+    }
+    @if (form.errors?.['sameAirport'] && form.controls.to.touched) {
+      <small class="error">Origin and destination must be different.</small>
+    }
+  </div>
+
+  <div class="field">
+    <label for="departureDate">Departure date</label>
+    <input id="departureDate" type="date" formControlName="departureDate" [min]="today" />
+    @if (form.controls.departureDate.touched && form.controls.departureDate.errors) {
+      <small class="error">Departure date is required.</small>
+    }
+  </div>
+
+  <div class="field">
+    <label for="returnDate">Return date</label>
+    <input
+      id="returnDate"
+      type="date"
+      formControlName="returnDate"
+      [min]="form.controls.departureDate.value || today"
+    />
+    @if (form.controls.returnDate.touched && form.controls.returnDate.errors) {
+      <small class="error">Return date is required.</small>
+    }
+    @if (form.errors?.['returnBeforeDeparture'] && form.controls.returnDate.touched) {
+      <small class="error">Return date cannot be before departure.</small>
+    }
+  </div>
+
+  <div class="field">
+    <label for="passengers">Passengers</label>
+    <input id="passengers" type="number" formControlName="passengers" min="1" max="9" />
+    @if (form.controls.passengers.touched && form.controls.passengers.errors) {
+      <small class="error">Enter between 1 and 9 passengers.</small>
+    }
+  </div>
+
+  <button type="submit" class="search-btn">Search flights</button>
+</form>
